@@ -3,19 +3,19 @@ import React, { useState, FormEvent } from "react";
 import { useDispatch } from "react-redux";
 import booksData from "@/app/data/books.json";
 import "./BookForm.css";
-import { addBook } from "@/app/redux/books/actionCreators";
 import { CreateBookWithNewItems } from "@/app/utils";
+import { addBook, fetchBook } from "@/app/redux/slices/bookSlieces";
+import { AppDispatch } from "@/app/redux/store";
 
 const BookForm: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (title && author) {
-      const book: Types.IBook = CreateBookWithNewItems({ title, author });
-      dispatch(addBook(book));
+      dispatch(addBook(CreateBookWithNewItems({ title, author }, 'manual')));
       setTitle("");
       setAuthor("");
     } else {
@@ -23,9 +23,13 @@ const BookForm: React.FC = () => {
     }
   };
 
+  const hundleAddRondomBookViaAPI = () => {
+    dispatch(fetchBook())
+  }
+
   const addRandomBook = () => {
     const randomIndex = Math.floor(Math.random() * booksData.length);
-    const randomBookWithID = CreateBookWithNewItems(booksData[randomIndex]);
+    const randomBookWithID = CreateBookWithNewItems(booksData[randomIndex], 'random');
     dispatch(addBook(randomBookWithID));
   };
 
@@ -60,6 +64,9 @@ const BookForm: React.FC = () => {
         </button>
         <button type="button" onClick={() => addRandomBook()}>
           Add Random
+        </button>
+        <button type="button" onClick={() => hundleAddRondomBookViaAPI()}>
+          Add Random via API
         </button>
       </form>
     </div>
