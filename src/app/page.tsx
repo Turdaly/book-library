@@ -1,6 +1,7 @@
 import Filter from "./components/Filter/Filter";
 import BookForm from "./components/BookForm/BookForm";
 import BookList from "./components/BookList/BookList";
+import Error from "./components/Error/Error";
 import './page.css'
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+      <Error />
     </div>
   );
 }

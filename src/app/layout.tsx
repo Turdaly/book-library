@@ -1,13 +1,16 @@
-// redux/provider.tsx
-import React from "react";
-import { Provider } from "react-redux";
+import "./globals.css";
+import { Providers } from "./redux/provider";
 import { store } from "./redux/store";
-
-
-interface ProvidersProps {
+export default function RootLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers store={store}>{children}</Providers>
+      </body>
+    </html>
+  );
 }
-
-export const Providers: React.FC<ProvidersProps> = ({ children }) => {
-  return <Provider store={store}>{children}</Provider>;
-};

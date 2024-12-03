@@ -5,13 +5,19 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../store";
 
-const initialState: Types.IBook[] = []
-
-export const fetchBook = createAsyncThunk('book/fetchbook', async () => {
-  const res = await axios.get("http://localhost:4000/random-book")
-  if (res?.data) return res.data
-})
-
+const initialState: Types.IBook[] = [];
+const API = 'http://localhost:4000'
+export const fetchBook = createAsyncThunk(
+  "book/fetchbook",
+  async (url: string) => {
+    try {
+      const res = await axios.get(`${API}/${url}`);
+      if (res?.data) return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 const bookSlices = createSlice({
   name: "book",
@@ -32,16 +38,19 @@ const bookSlices = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchBook.fulfilled, (state, action: PayloadAction<Types.IBookDetails>) => {
-      if(action.payload.title && action.payload.author) {
-        state.push(CreateBookWithNewItems(action.payload, 'API'))
+    builder.addCase(
+      fetchBook.fulfilled,
+      (state, action: PayloadAction<Types.IBookDetails>) => {
+        if (action.payload.title && action.payload.author) {
+          state.push(CreateBookWithNewItems(action.payload, "API"));
+        }
       }
-    })
-  }
+    );
+    builder.addCase(fetchBook.rejected, (state, action) => {});
+  },
 });
 
 export const { addBook, deleteBook, toggleFavorite } = bookSlices.actions;
 
-
-export const selectBook = (state: RootState) => state.books
-export default bookSlices.reducer
+export const selectBook = (state: RootState) => state.books;
+export default bookSlices.reducer;
