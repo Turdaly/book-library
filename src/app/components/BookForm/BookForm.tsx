@@ -1,20 +1,24 @@
 "use client";
-import { useState, FormEvent, FC } from "react";
-import { useDispatch } from "react-redux";
+import { useState, FormEvent, FC, memo, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FaSpinner } from "react-icons/fa";
 import booksData from "@/app/data/books.json";
 import { CreateBookWithNewItems } from "@/app/utils";
-import { addBook, fetchBook } from "@/app/redux/slices/bookSlieces";
+import {
+  addBook,
+  fetchBook,
+  selectIsLoadingViaAPI,
+} from "@/app/redux/slices/bookSlieces";
 import { AppDispatch } from "@/app/redux/store";
 import { setError } from "@/app/redux/slices/errorSlices";
 import "./BookForm.css";
 
-const BookForm: FC = () => {
+const BookForm: FC = memo(() => {
   const [title, setTitle] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const isLoadingViaAPI = useSelector(selectIsLoadingViaAPI);
   const dispatch = useDispatch<AppDispatch>();
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (title && author) {
@@ -24,25 +28,20 @@ const BookForm: FC = () => {
     } else {
       dispatch(setError("You must fill title and author"));
     }
-  };
+  }, [dispatch]);
 
-  const hundleAddRondomBookViaAPI = async () => {
-    try {
-      setIsLoading(true);
-      await dispatch(fetchBook("random-book-delayed"));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const hundleAddRondomBookViaAPI = useCallback(() => {
+    dispatch(fetchBook("random-book-delayed"));
+  }, [dispatch]);
 
-  const addRandomBook = () => {
+  const addRandomBook = useCallback(() => {
     const randomIndex = Math.floor(Math.random() * booksData.length);
     const randomBookWithID = CreateBookWithNewItems(
       booksData[randomIndex],
       "random"
     );
     dispatch(addBook(randomBookWithID));
-  };
+  }, [dispatch]);
 
   return (
     <div className="app-block book-form">
@@ -77,9 +76,9 @@ const BookForm: FC = () => {
         <button
           type="button"
           onClick={() => hundleAddRondomBookViaAPI()}
-          disabled={isLoading}
+          disabled={isLoadingViaAPI}
         >
-          {isLoading ? (
+          {isLoadingViaAPI ? (
             <>
               <span>Loading book ...</span>
               <FaSpinner className="spinner" />
@@ -91,6 +90,6 @@ const BookForm: FC = () => {
       </form>
     </div>
   );
-};
+});
 
 export default BookForm;

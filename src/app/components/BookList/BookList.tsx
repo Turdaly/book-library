@@ -8,8 +8,9 @@ import {
   selectTitleFilter,
 } from "@/app/redux/slices/filterSlices";
 import { deleteBook, selectBook, toggleFavorite } from "@/app/redux/slices/bookSlieces";
+import { memo } from "react";
 
-const BookList = () => {
+const BookList = memo(() => {
   const dispatch = useDispatch();
   const books: Types.IBook[] = useSelector(selectBook);
   const titleFilter = useSelector(selectTitleFilter);
@@ -73,6 +74,6 @@ const BookList = () => {
       )}
     </div>
   );
-};
+});
 
 export default BookList;

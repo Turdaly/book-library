@@ -6,10 +6,14 @@ declare global {
       title: string;
       author: string;
     }
-    interface IBook  extends IBookDetails {
+    interface IBook extends IBookDetails {
       id: string;
       sourse: string;
       isFavorite: boolean;
+    }
+    interface IStateBook {
+      books: IBook[];
+      isLoadingViaAPI: boolean;
     }
     interface FilterState {
       title: string;

@@ -10,8 +10,9 @@ import {
   setOnlyFavoriteFilter
 } from "@/app/redux/slices/filterSlices";
 import "./Filter.css";
+import { memo } from "react";
 
-const Filter = () => {
+const Filter = memo(() => {
   const dispatch = useDispatch();
   const titleFilter = useSelector(selectTitleFilter);
   const authorFilter = useSelector(selectAuthorFilter);
@@ -47,6 +48,6 @@ const Filter = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Filter;
